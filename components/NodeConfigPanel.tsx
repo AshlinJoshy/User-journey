@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Node } from '@xyflow/react';
-import { X } from 'lucide-react';
+import { X, Trash2 } from 'lucide-react';
 
 interface NodeConfigPanelProps {
   selectedNode: Node | null;
@@ -44,6 +44,15 @@ const NodeConfigPanel = ({ selectedNode, setNodes, setSelectedNode }: NodeConfig
     );
   };
 
+  const handleDelete = () => {
+    if (!selectedNode) return;
+    
+    // Remove the node
+    setNodes((nds) => nds.filter((n) => n.id !== selectedNode.id));
+    // Clear selection
+    setSelectedNode(null);
+  };
+
   if (!selectedNode) {
     return (
       <aside className="w-80 bg-white border-l border-gray-200 p-4 hidden md:block">
@@ -63,7 +72,7 @@ const NodeConfigPanel = ({ selectedNode, setNodes, setSelectedNode }: NodeConfig
         </button>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 flex-grow overflow-y-auto">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Label
@@ -73,15 +82,19 @@ const NodeConfigPanel = ({ selectedNode, setNodes, setSelectedNode }: NodeConfig
             value={label}
             onChange={(e) => {
               setLabel(e.target.value);
-              handleUpdate(); // Auto-save on change or use explicit save
+              // handleUpdate(); // Wait for blur to update for performance, or add debounce. 
+              // React state update is fast enough for input, but let's stick to onBlur/onChange combination for immediate feedback if needed.
+              // Actually, updating on every keystroke might re-render flow too often, so let's keep handleUpdate for onBlur or specific save.
+              // BUT, to see live changes on canvas, we need to update nodes. 
+              // Let's rely on onBlur for the node update to avoid lag.
             }}
             onBlur={handleUpdate}
+            // Add onKeyDown Enter to save
+            onKeyDown={(e) => { if(e.key === 'Enter') handleUpdate(); }}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
-        {/* Conditional fields based on type could go here */}
-        
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Target / Goal
@@ -114,8 +127,17 @@ const NodeConfigPanel = ({ selectedNode, setNodes, setSelectedNode }: NodeConfig
         </div>
       </div>
       
-      <div className="mt-auto pt-4 border-t text-xs text-gray-400">
-        ID: {selectedNode.id}
+      <div className="mt-4 pt-4 border-t flex flex-col gap-2">
+        <button 
+          onClick={handleDelete}
+          className="flex items-center justify-center gap-2 w-full px-4 py-2 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors text-sm font-medium"
+        >
+          <Trash2 className="w-4 h-4" />
+          Delete Node
+        </button>
+        <div className="text-xs text-gray-400 text-center">
+          ID: {selectedNode.id}
+        </div>
       </div>
     </aside>
   );

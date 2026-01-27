@@ -16,6 +16,7 @@ import {
   ReactFlowInstance,
   Panel,
   NodeMouseHandler,
+  EdgeMouseHandler,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -98,6 +99,9 @@ const JourneyBuilder = () => {
     setSelectedNodeId(null);
   }, []);
 
+  // Optional: You can handle edge clicks if you want to show a delete button for edges in a panel
+  // But standard behavior is select + backspace.
+  
   const selectedNode = useMemo(() => {
     return nodes.find((n) => n.id === selectedNodeId) || null;
   }, [nodes, selectedNodeId]);
@@ -119,13 +123,15 @@ const JourneyBuilder = () => {
             onNodeClick={onNodeClick}
             onPaneClick={onPaneClick}
             nodeTypes={nodeTypes}
+            deleteKeyCode={['Backspace', 'Delete']}
             fitView
           >
             <Controls />
             <Background />
             <MiniMap />
-            <Panel position="top-right" className="bg-white p-2 rounded shadow-sm border text-xs text-gray-500 mr-12 md:mr-0">
-              Drag nodes to map journey. Click a node to edit.
+            <Panel position="top-right" className="bg-white p-2 rounded shadow-sm border text-xs text-gray-500 mr-12 md:mr-0 flex flex-col gap-1">
+              <div>Drag nodes to map journey.</div>
+              <div>Select a node/edge and press <b>Backspace</b> to delete.</div>
             </Panel>
           </ReactFlow>
         </div>
