@@ -23,6 +23,7 @@ import { Save } from 'lucide-react';
 
 import Sidebar from './Sidebar';
 import CustomNode from './nodes/CustomNode';
+import FunnelNode from './nodes/FunnelNode';
 import NodeConfigPanel from './NodeConfigPanel';
 
 const initialNodes: Node[] = [
@@ -36,6 +37,7 @@ const initialNodes: Node[] = [
 
 const nodeTypes = {
   custom: CustomNode,
+  funnel: FunnelNode,
 };
 
 let id = 0;
@@ -101,9 +103,10 @@ const JourneyBuilder = ({ projectId }: JourneyBuilderProps) => {
         y: event.clientY,
       });
 
+      // Special handling for different node types
       const newNode: Node = {
         id: getId(),
-        type: 'custom', // We use one custom node component and pass specific type via data
+        type: type === 'funnel' ? 'funnel' : 'custom', 
         position,
         data: { label: label || `${type} node`, type: nodeType },
       };

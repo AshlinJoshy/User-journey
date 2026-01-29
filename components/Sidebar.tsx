@@ -14,7 +14,8 @@ import {
   Video,
   Globe,
   PlusCircle,
-  Settings
+  Settings,
+  Filter
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -38,6 +39,11 @@ const Sidebar = () => {
 
   return (
     <aside className="w-64 bg-white border-r border-gray-200 p-4 flex flex-col gap-6 overflow-y-auto">
+      <div className="bg-blue-50 p-3 rounded-md border border-blue-100">
+        <h3 className="text-xs font-semibold text-blue-800 uppercase mb-3 tracking-wider">Strategic Frameworks</h3>
+        <DraggableItem type="funnel" label="Marketing Funnel" category="framework" icon={Filter} />
+      </div>
+
       <div>
         <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3 tracking-wider">Sources</h3>
         <DraggableItem type="meta-ad" label="Meta Ad (FB/Insta)" category="source" icon={Facebook} />
