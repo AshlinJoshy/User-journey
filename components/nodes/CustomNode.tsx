@@ -61,12 +61,18 @@ const CustomNode = ({ data, selected }: NodeProps<Node>) => {
 
   return (
     <div className={clsx(
-      "px-4 py-3 shadow-md rounded-md border-2 min-w-[150px]",
+      "px-4 py-3 shadow-md rounded-md border-2 min-w-[150px] relative",
       colors,
       selected ? "border-black ring-1 ring-black" : "border-transparent"
     )}>
-      {/* Target Handle */}
-      <Handle type="target" position={Position.Top} className="w-3 h-3 !bg-gray-400" />
+      {/* Top Handle */}
+      <Handle type="target" position={Position.Top} className="w-3 h-3 !bg-gray-400" id="top" />
+      {/* Right Handle */}
+      <Handle type="source" position={Position.Right} className="w-3 h-3 !bg-gray-400" id="right" />
+      {/* Bottom Handle */}
+      <Handle type="source" position={Position.Bottom} className="w-3 h-3 !bg-gray-400" id="bottom" />
+      {/* Left Handle */}
+      <Handle type="target" position={Position.Left} className="w-3 h-3 !bg-gray-400" id="left" />
       
       <div className="flex items-center gap-2">
         <Icon className="w-5 h-5" />
@@ -78,9 +84,6 @@ const CustomNode = ({ data, selected }: NodeProps<Node>) => {
           Target: {target}
         </div>
       )}
-
-      {/* Source Handle */}
-      <Handle type="source" position={Position.Bottom} className="w-3 h-3 !bg-gray-400" />
     </div>
   );
 };
