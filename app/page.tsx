@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Plus, Trash2, Map } from 'lucide-react';
+import { Plus, Trash2, Map, LayoutTemplate } from 'lucide-react';
 import Header from '@/components/Header';
+import { realEstateTemplate } from './data/templates';
 
 interface Project {
   id: string;
@@ -36,6 +37,26 @@ export default function ProjectsPage() {
     setProjects(updatedProjects);
   };
 
+  const createFromTemplate = () => {
+    const newId = crypto.randomUUID();
+    const newProject: Project = {
+      id: newId,
+      name: `${realEstateTemplate.name} (Copy)`,
+      createdAt: new Date().toLocaleDateString(),
+    };
+    
+    const updatedProjects = [...projects, newProject];
+    localStorage.setItem('real-estate-projects', JSON.stringify(updatedProjects));
+    
+    // Initialize with template data
+    localStorage.setItem(`project-${newId}`, JSON.stringify({ 
+      nodes: realEstateTemplate.nodes, 
+      edges: realEstateTemplate.edges 
+    }));
+    
+    setProjects(updatedProjects);
+  };
+
   const deleteProject = (id: string, e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation if button is inside Link (though we'll structure it to avoid this)
     if(!confirm('Are you sure you want to delete this project?')) return;
@@ -50,22 +71,46 @@ export default function ProjectsPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <h1 className="text-3xl font-bold text-gray-900">Your Campaigns</h1>
-          <button 
-            onClick={createNewProject}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
-          >
-            <Plus className="w-5 h-5" />
-            New Project
-          </button>
+          <div className="flex gap-3">
+            <button 
+              onClick={createFromTemplate}
+              className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-md flex items-center gap-2 transition-colors shadow-sm"
+            >
+              <LayoutTemplate className="w-5 h-5" />
+              Use Template
+            </button>
+            <button 
+              onClick={createNewProject}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors shadow-sm"
+            >
+              <Plus className="w-5 h-5" />
+              New Project
+            </button>
+          </div>
         </div>
 
         {projects.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-lg border border-dashed border-gray-300">
             <Map className="w-12 h-12 text-gray-300 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900">No campaigns yet</h3>
-            <p className="text-gray-500 mt-1">Get started by creating a new journey map.</p>
+            <p className="text-gray-500 mt-1 mb-6">Get started by creating a new journey map.</p>
+            <div className="flex justify-center gap-4">
+              <button 
+                onClick={createFromTemplate}
+                className="text-blue-600 hover:text-blue-800 font-medium text-sm"
+              >
+                Start with a Template
+              </button>
+              <span className="text-gray-300">|</span>
+              <button 
+                onClick={createNewProject}
+                className="text-blue-600 hover:text-blue-800 font-medium text-sm"
+              >
+                Create Blank
+              </button>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
